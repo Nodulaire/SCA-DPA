@@ -61,7 +61,24 @@ As wikipedia say:
 ```  
 
 AES is a standard and widely used. Facts that make him very interesting for hackers.  
-In each of the 16 rounds
+
+# AES weakness
+
+In AES, the plaintext block is first XORed with the primary key and then goes through 10 rounds of processing. Each round consist of :
+- SubByte
+- ShiftRow
+- MixColumn
+- AddRoundKey  
+
+![aes](Images/AES.png)  
+We are looking for the roundkey of the last round (the only without the MixColumn step).  
+
+
+
+
+
+In order to implement a DPA attack, an attacker first observes m encryption operations and T power traces captures with k samples each.
+
 
 TODO Un draw.io  expliauqtif du fonctionnement de l'attaque
 trouver comment lire les data
