@@ -6,16 +6,13 @@ School project based on Florent Bruguier work.
 This document aim to explain the side channel attack by power analysis and implement it.
 
 ## Summary
-1 - [Side channel attack]  
-2 - [Differential power analysis]  
-3 - [AES encryption]  
-3.1 - [AES weakness]  
-4 - [Implementation]  
-4.1 - [Mathlab program]  
-4.1.1 - [Code explaination]  
-4.1.2 - [Demonstration]  
-4.2 - [Python implementation]  
-5 - [Conclusion]  
+1 - [Side channel attack](#side-channel-attack)
+2 - [Differential power analysis](#differential-power-analysis)
+3 - [AES encryption](#aes-encryption)
+3.1 - [AES weakness](#aes-weakness)
+4 - [Implementation](#implementation)
+4.1 - [Matlab program](#matlab-program)
+5 - [Conclusion](#conclusion)  
 
 ## Side channel attack
 
@@ -74,15 +71,20 @@ In AES, the plaintext block is first XORed with the primary key and then goes th
 We are looking for the roundkey of the last round (the only without the MixColumn step).  
 
 
-
-
-
 In order to implement a DPA attack, an attacker first observes m encryption operations and T power traces captures with k samples each.
 
 
-# 4 - Implementation 
-## 4.1 - Mathlab program 
-### 4.1.1 - Code explaination 
+# Implementation
+To be successfull a DPA attack need to follow a few steps:    
+- Generate a hudge amount of encryption/decryption operation with the target cryptosystem and key.  
+- For each operation get the power consumption and the I/O (clear text and/or cypher text)  
+- Take a byte from the SBOX output and use it as separator.  
+- Make the average of each sub group  
+- Do the operation for each possible value of a byte (255).  
+- Take the highest value and enjoy finding a Bite of the key.   
+- Repeat for each bytes if the key.  
+ 
+## Matlab program 
 
 The first exercice was to plot the power tracesand then 'zoom' on the first round :
 ```Matlab
@@ -132,7 +134,7 @@ solvedKey = zeros(1,byteEnd);
 ```
 
 - Then we loop over each key candidate and make the average of each subgroup :
-```Mathlab 
+```Matlab
    for K = keyCandidateStart:keyCandidateStop                            
         % --> calculate hypthesis here <--
         % Two AES first steps
@@ -157,7 +159,7 @@ solvedKey = zeros(1,byteEnd);
     end;
  ```
 - Last part : get the highest point of each raw and clumn to find the correct value.
-``` Mathlab
+```Matlab
 % for every byte in the key do:
 for BYTE=byteStart:byteEnd
  
@@ -187,7 +189,7 @@ for BYTE=byteStart:byteEnd
 ```
 
 Now the full code in one :
-```Mathlab
+```Matlab
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Matlab key recovery exercise template %
 %                                       %
@@ -355,3 +357,7 @@ for BYTE=byteStart:byteEnd
 
 end;
 ```
+
+# Conclusion
+Through this exercice, we were able to implement a successfull DPA attack on AES-128. Even if the attack need a lot of requirement and work to be effective, we clearly see the possibilities and the threat of sides channel attacks.  
+With the computer security multiple level domain as it is now, nothing cheap and effective can be found to avoid those attacks. The comsumption randomisation and reduction is clearly too expensive for others than gouvernement and big compagny.  
