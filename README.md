@@ -6,13 +6,13 @@ School project based on Florent Bruguier work.
 This document aim to explain the side channel attack by power analysis and implement it.
 
 ## Summary
-1 - [Side channel attack](#side-channel-attack)
-2 - [Differential power analysis](#differential-power-analysis)
-3 - [AES encryption](#aes-encryption)
-3.1 - [AES weakness](#aes-weakness)
-4 - [Implementation](#implementation)
-4.1 - [Matlab program](#matlab-program)
-5 - [Conclusion](#conclusion)  
+1 - [Side channel attack](#side-channel-attack)  
+2 - [Differential power analysis](#differential-power-analysis)  
+3 - [AES encryption](#aes-encryption)  
+3.1 - [AES weakness](#aes-weakness)  
+4 - [Implementation](#implementation)  
+4.1 - [Matlab program](#matlab-program)  
+5 - [Conclusion](#conclusion)    
 
 ## Side channel attack
 
