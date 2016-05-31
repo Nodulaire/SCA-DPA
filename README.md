@@ -363,4 +363,4 @@ In the actual state of art, nothing cheap and effective can be found to avoid th
 
 The progressive centralisation of computing process in the 'cloud' may help governements and agencies to perform side channels attack. Indeed, a datacenter is a warehouse with physical access to a lot of computing hardware. And the standardisation of side channel attacks on datacenter may already be a reality.   
 
-Who know what's going on behind those big walls.  
+Who knows what's going on behind those big walls.  
