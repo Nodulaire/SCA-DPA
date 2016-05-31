@@ -357,7 +357,10 @@ end;
 ```
 
 # Conclusion
-Through this exercise, we were able to implement a successful DPA attack on AES-128. Even if the attack has a lot of requirements and needs a lot of work to be effective, we clearly see the possibilities and the threats of sides channel attacks.  
-In the actual state of art, nothing cheap and effective can be found to avoid those attacks. The consumption randomisation and reduction is clearly too expensive for entities others than governments or big companies.   
+Through this exercise, we were able to implement a successful DPA attack on AES-128. Even if the attack has a lot of requirements and needs a lot of work to be effective, we clearly see the possibilities and the threats of sides channel attacks.    
 
-The progressive centralisation of computing process in the 'cloud' may help governements and agencies to perform side channels attack. Indeed, a datacenter is a warehouse with physical access to a lot of computing hardware. And the standardisation of side channel attacks on datacenter may already be a reality. Who know what's going on behind those big walls.  
+In the actual state of art, nothing cheap and effective can be found to avoid those attacks. The consumption randomisation and reduction is clearly too expensive for entities others than governments or big companies.     
+
+The progressive centralisation of computing process in the 'cloud' may help governements and agencies to perform side channels attack. Indeed, a datacenter is a warehouse with physical access to a lot of computing hardware. And the standardisation of side channel attacks on datacenter may already be a reality.   
+
+Who know what's going on behind those big walls.  
