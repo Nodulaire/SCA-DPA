@@ -7,13 +7,13 @@ This document aims to explain a side channel attack using differential power
 analysis and then presents an implementation.
 
 ## Summary
-1 - [Side channel attack](#side-channel-attack)
-2 - [Differential power analysis](#differential-power-analysis)
-3 - [AES encryption](#aes-encryption)
-3.1 - [AES weakness](#aes-weakness)
-4 - [Implementation](#implementation)
-4.1 - [Matlab program](#matlab-program)
-5 - [Conclusion](#conclusion)
+1 - [Side channel attack](#side-channel-attack)  
+2 - [Differential power analysis](#differential-power-analysis)  
+3 - [AES encryption](#aes-encryption)  
+3.1 - [AES weakness](#aes-weakness)  
+4 - [Implementation](#implementation)  
+4.1 - [Matlab program](#matlab-program)  
+5 - [Conclusion](#conclusion)  
 
 ## Side channel attack
 
@@ -39,8 +39,8 @@ Computer security is a deep layered domain. Predicting and modeling those
 attacks is very difficult. Each layer of security impacts the assumptions made
 by the others. The software developer assumes that the hardware designer did
 his job well. As a result, security faults often involve unanticipated
-interactions between components. Components who are made by different people.
-![Side equipement](Images/Side_channel.png)
+interactions between components. Components who are made by different people.  
+![Side equipement](Images/Side_channel.png)  
 Within the existing model, side channel attacks can't be avoided. The model is
 vulnerable by design.
 
@@ -51,9 +51,9 @@ semiconductor and logic gates (made of transistors). Those components have a
 power consumption, which can be measured. First of all, this attack can't be
 easily implemented at home.
 
-You need an oscilloscope and a physical access to the processor/chip tested.
+You need an oscilloscope and a physical access to the processor/chip tested.  
 
-![DPA Equipements](Images/power-analysis.jpg)
+![DPA Equipements](Images/power-analysis.jpg)  
 
 In addition of the SPA (simple power analysis) we add statistical functions to
 deduce sensitive information from power consumption.
@@ -79,8 +79,8 @@ through 10 rounds of processing. Each round consists of :
 - ShiftRow
 - MixColumn
 - AddRoundKey
-
-![aes](Images/AES.png)
+  
+![aes](Images/AES.png)  
 We are looking for the roundkey of the last round (the only one without the
 MixColumn step).
 
