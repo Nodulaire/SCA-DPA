@@ -3,7 +3,7 @@
 School project based on Florent Bruguier work.
 
 ## Aim
-This document aim to explain the side channel attack by power analysis and implement it.
+This document aims to explain side a channel attack using differential power analysis and implements it.
 
 ## Summary
 1 - [Side channel attack](#side-channel-attack)  
@@ -18,10 +18,10 @@ This document aim to explain the side channel attack by power analysis and imple
 
 ### How it work
 In modern cryptography, the deciphering process is binary. You have the good
- decryption key or not. There isn't a friendly message to tell you 'Hey you are
+ decryption key or not. There isn't a friendly message to tell you, 'Hey you are
  on the right  way! Keep going!'.
 
-Side channel attacks search for **physics behavior** of the cryptographic process.  
+Side channel attacks search for **physics behaviours** of the cryptographic process.  
 There is a lot of them (and more to discover):
 - Magnetic field analysis
 - Sound leaks
@@ -31,17 +31,17 @@ There is a lot of them (and more to discover):
 
 The last one is the one explained in this document.
 
-### Why does those attack exist ?
+### Why do those attacks exist ?
 
-Computer security is multiple level domain. Predict and model those attack is very difficult.   
-Each layers of the security domain work on the others layers security assumption. The software developer assume that the hardware designer did his job well.  
+Computer security is multiple level domains. Predict and model those attacks is very difficult.   
+Each layer of the security domain works on the other layers security assumption. The software developer assume that the hardware designer did his job well.  
 As a result, security faults involve unanticipated interactions between components. Components who are made by different people.  
 ![Side equipement](Images/Side_channel.png)  
 With the existing model, side channel attacks can't be avoided. The model is vulnerable by design.
 
-## Differential power analysis
+## Differential Power Analysis
 
-On the hardware level, cryptographic algorithm are implemented using semiconductor and logic gates (made of transistors). Those component have a power consumption, who can be measured.
+On the hardware level, cryptographic algorithms are implemented using semiconductor and logic gates (made of transistors). Those components have a power consumption, which can be measured.
 First of all, this attack can't be easily implemented at home.
 
 You need an oscilloscope and a physical access to the processor/chip tested.    
@@ -52,16 +52,16 @@ You need an oscilloscope and a physical access to the processor/chip tested.
 In addition of the SPA (simple power analysis) we add statistical function to guess sensitive information from power consumption.
 
 ## AES Encryption
-As wikipedia say:   
+As Wikipedia say:   
 ```
 'AES (acronym of Advanced Encryption Standard) is a symmetric encryption algorithm. The algorithm was developed by two Belgian cryptographer Joan Daemen and Vincent Rijmen. AES was designed to be efficient in both hardware and software, and supports a block length of 128 bits and key lengths of 128, 192, and 256 bits.'
 ```  
 
 AES is a standard and widely used. Facts that make him very interesting for hackers.  
 
-# AES weakness
+# AES Weakness
 
-In AES, the plaintext block is first XORed with the primary key and then goes through 10 rounds of processing. Each round consist of :
+In AES, the plain text block is first XORed with the primary key and then goes through 10 rounds of processing. Each round consist of :
 - SubByte
 - ShiftRow
 - MixColumn
@@ -75,23 +75,23 @@ In order to implement a DPA attack, an attacker first observes m encryption oper
 
 
 # Implementation
-To be successfull a DPA attack need to follow a few steps:    
-- Generate a hudge amount of encryption/decryption operation with the target cryptosystem and key.  
-- For each operation get the power consumption and the I/O (clear text and/or cypher text)  
-- Take a byte from the SBOX output and use it as separator.  
+To be successful a DPA attack needs to follow a few steps:    
+- Generate a huge amount of encryption/decryption operation with the target cryptosystem and key.  
+- For each operation get the power consumption and the I/O (clear text and/or cipher text)  
+- Take a byte from the SBOX output and use it as a separator.  
 - Make the average of each sub group  
 - Do the operation for each possible value of a byte (255).  
 - Take the highest value and enjoy finding a Bite of the key.   
-- Repeat for each bytes if the key.  
+- Repeat for each byte if the key.  
  
 ## Matlab program 
 
-The first exercice was to plot the power tracesand then 'zoom' on the first round :
+The first exercise was to plot the power traces and then 'zoom' on the first round :
 ```Matlab
 % --> create the plots here <-- 
 figure(1);
 plot(traces(1,:));
-title('Consommation total d''un chiffrement');
+title('Consommation totale d’un chiffrement');
 
 % --> With zoom on first round <-- 
 offset = 50000;
@@ -101,18 +101,18 @@ traces2 = myload('traces-00112233445566778899aabbccddeeff.bin', traceSize, offse
 % --> Zoom into an AES round <--
 figure(2);
 plot(traces2(2,:));
-title('Consommation d''un round AES');
+title('Consommation d’un round AES');
 ```
 That's all for the first part.
 
-Exercice 2 consist of the key recovery itself:
+Exercise 2 consists of the key recovery itself:
 - First the variables declaration
 ```Matlab
 % variables declaration
 byteStart = 1; 
 byteEnd = 16; % AES-128  
 keyCandidateStart = 0;
-keyCandidateStop = 255; % All possibility on 1 Bytes
+keyCandidateStop = 255; % All possibilities on 1 Bytes
 solvedKey = zeros(1,byteEnd);
 ```
 - We need to loop over the 200 traces gived, and split them into 2 groups :
@@ -120,10 +120,10 @@ solvedKey = zeros(1,byteEnd);
  % On parcours l'ensemble des 200 traces
         for L = 1:numberOfTraces
             %Récupération du premier bit du résultat
-            %des deux premiéres étapes de l'AES
+            %des deux premières étapes de l’AES
             firstByte = bitget(Hypothesis(L,K+1),1);
             if firstByte == 1
-                %Incrémention des traces dans les groupd
+                %Incrémention des traces dans les groupes
                 group1(1,:) = group1(1,:) + traces2(L,:);
                 nbTracesG1 = nbTracesG1 + 1;
             else
@@ -136,9 +136,9 @@ solvedKey = zeros(1,byteEnd);
 - Then we loop over each key candidate and make the average of each subgroup :
 ```Matlab
    for K = keyCandidateStart:keyCandidateStop                            
-        % --> calculate hypthesis here <--
+        % --> calculate hypothesis here <--
         % Two AES first steps
-        Hypothesis(:,K+1)=bitxor(plaintext(:,BYTE),K);
+        Hypothesis(:,K+1)=bitxor(plain text(:,BYTE),K);
         Hypothesis(:,K+1)=SBOX(Hypothesis(:,K+1)+1);
         
         group1 = zeros(1,segmentLength);
@@ -171,17 +171,17 @@ for BYTE=byteStart:byteEnd
     Hypothesis = zeros(numberOfTraces,256);
     cmptPlainText=0;    
    
-    % Previous snipet here
+    % Previous snippet here
     
     %Récupération de la ligne qui comporte le point le plus haut
     %de la courbe de puissance
     %1°) -- On recherche tous les max de toutes les lignes
-    %2°) -- On récupére l'index de ligne et de colonne des MAX
+    %2°) -- On récupère l’index de ligne et de colonne des MAX
     [ligne,colonne]=ind2sub(size(groupFin), find(groupFin==max(groupFin(:))));
     
     solvedKey(1,BYTE) = ligne - 1;
     
-    %Affichage temporaire de la courbe pour vérifiction
+    %Affichage temporaire de la courbe pour vérification
     %figure(3);
     %plot(groupFin(1,:));
     %title('Courbe DPA !');
@@ -230,7 +230,7 @@ offset = 0;
 segmentLength = 370000; % for the beginning the segmentLength = traceSize
                     
 % columns and rows variables are used as inputs 
-% to the function loading the plaintext/ciphertext
+% to the function loading the plain text/cipher text
 columns = 16;
 rows = numberOfTraces;
 
@@ -238,7 +238,7 @@ rows = numberOfTraces;
 % Calling the functions %
 %%%%%%%%%%%%%%%%%%%%%%%%%
 
-% function myload processes the binary file containing the measured traces and
+% Function myload processes the binary file containing the measured traces and
 % stores the data in the output matrix so the traces (or their reduced parts)
 % can be used for the key recovery process.
 % Inputs:
@@ -253,14 +253,14 @@ rows = numberOfTraces;
 % traces correspond to the trace segment you are using for the recovery.
 traces = myload('traces-00112233445566778899aabbccddeeff.bin', traceSize, offset, segmentLength, numberOfTraces);
 
-% function myin is used to load the plaintext and ciphertext 
+% function myin is used to load the plain text and cipher text 
 % to the corresponding matrices. 
 % Inputs:
-%   'file' - name of the file containing the plaintext or ciphertext
+%   'file' - name of the file containing the plain text or cipher text
 %   columns - number of columns (e.g., size of the AES data block)
 %   rows - number of rows (e.g., number of measurements)
-plaintext = myin('plaintext-00112233445566778899aabbccddeeff.txt', columns, rows);
-ciphertext = myin('ciphertext-00112233445566778899aabbccddeeff.txt', columns, rows);
+plain text = myin('plaintext-00112233445566778899aabbccddeeff.txt', columns, rows);
+cipher text = myin('ciphertext-00112233445566778899aabbccddeeff.txt', columns, rows);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % EXERCISE 1 -- Plotting the power trace(s): %
@@ -271,7 +271,7 @@ ciphertext = myin('ciphertext-00112233445566778899aabbccddeeff.txt', columns, ro
 % --> create the plots here <-- 
 %figure(1);
 %plot(traces(1,:));
-%title('Consommation total d''un chiffrement');
+%title('Consommation totale d’un chiffrement');
 
 % --> With zoom on first round <-- 
 offset = 50000;
@@ -279,7 +279,7 @@ segmentLength = 40000;
 traces2 = myload('traces-00112233445566778899aabbccddeeff.bin', traceSize, offset, segmentLength, numberOfTraces);
 %figure(2);
 %plot(traces2(2,:));
-%title('Consommation d''un round AES');
+%title('Consommation d’un round AES');
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -292,7 +292,7 @@ traces2 = myload('traces-00112233445566778899aabbccddeeff.bin', traceSize, offse
 %   - create the power hypothesis
 %   - extract the key
 
-% variables declaration
+% variable declaration
 byteStart = 1;
 byteEnd = 16;
 keyCandidateStart = 0;
@@ -311,9 +311,9 @@ for BYTE=byteStart:byteEnd
     cmptPlainText=0;
     
     for K = keyCandidateStart:keyCandidateStop                            
-        % --> calculate hypthesis here <--
+        % --> calculate hypothesis here <--
         % Two AES first steps
-        Hypothesis(:,K+1)=bitxor(plaintext(:,BYTE),K);
+        Hypothesis(:,K+1)=bitxor(plain text(:,BYTE),K);
         Hypothesis(:,K+1)=SBOX(Hypothesis(:,K+1)+1);
         
         group1 = zeros(1,segmentLength);
@@ -324,13 +324,13 @@ for BYTE=byteStart:byteEnd
         nbTracesG1 = 0;
         nbTracesG2 = 0;
         
-        % On parcours l'ensemble des 200 traces
+        % On parcourt l’ensemble des 200 traces
         for L = 1:numberOfTraces
             %Récupération du premier bit du résultat
-            %des deux premiéres étapes de l'AES
+            %des deux premières étapes de l’AES
             firstByte = bitget(Hypothesis(L,K+1),1);
             if firstByte == 1
-                %Incrémention des traces dans les groupd
+                %Incrémention des traces dans les groupes
                 group1(1,:) = group1(1,:) + traces2(L,:);
                 nbTracesG1 = nbTracesG1 + 1;
             else
@@ -343,12 +343,12 @@ for BYTE=byteStart:byteEnd
     %Récupération de la ligne qui comporte le point le plus haut
     %de la courbe de puissance
     %1°) -- On recherche tous les max de toutes les lignes
-    %2°) -- On récupére l'index de ligne et de colonne des MAX
+    %2°) -- On récupère l’index de ligne et de colonne des MAX
     [ligne,colonne]=ind2sub(size(groupFin), find(groupFin==max(groupFin(:))));
     
     solvedKey(1,BYTE) = ligne - 1;
     
-    %Affichage temporaire de la courbe pour vérifiction
+    %Affichage temporaire de la courbe pour vérification
     %figure(3);
     %plot(groupFin(1,:));
     %title('Courbe DPA !');
@@ -359,5 +359,5 @@ end;
 ```
 
 # Conclusion
-Through this exercice, we were able to implement a successfull DPA attack on AES-128. Even if the attack need a lot of requirement and work to be effective, we clearly see the possibilities and the threat of sides channel attacks.  
-With the computer security multiple level domain as it is now, nothing cheap and effective can be found to avoid those attacks. The comsumption randomisation and reduction is clearly too expensive for others than gouvernement and big compagny.  
+Through this exercise, we were able to implement a successful DPA attack on AES-128. Even if the attack has a lot of requirements and needs a lot of work to be effective, we clearly see the possibilities and the threats of sides channel attacks.  
+`With the computer security multiple level domain as it is now` **hein ?**, nothing cheap and effective can be found to avoid those attacks. The consumption randomisation and reduction is clearly too expensive for entities others than governments or big companies.  
