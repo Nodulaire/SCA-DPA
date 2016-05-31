@@ -4,7 +4,7 @@ School project based on Florent Bruguier work.
 
 ## Aim
 This document aims to explain a side channel attack using differential power
-analysis and implements it.
+analysis and then presents an implementation.
 
 ## Summary
 1 - [Side channel attack](#side-channel-attack)
@@ -17,49 +17,49 @@ analysis and implements it.
 
 ## Side channel attack
 
-### How it work
-In modern cryptography, the deciphering process is binary. You have the good
-decryption key or not. There isn't a friendly message to tell you, 'Hey you are
-on the right  way! Keep going!'.
+### How it works
 
-Side channel attacks search for **physics behaviours** of the cryptographic
-process.  There is a lot of them (and more to discover):
+In modern cryptography, the deciphering process is binary. You either have the
+correct decryption key, or you don't. There's no friendly message to tell
+you, 'Hey you are on the right track! Keep going!'.
+
+Side channel attacks look for **physical behaviours** of the cryptographic
+process. There are a lot of them (and more yet to be discovered):
 - Magnetic field analysis
 - Sound leaks
 - Timing attack
 - Row hammer
 - Differential power analysis
 
-The last one is the one explained in this document.
+The last one being explained in this document.
 
 ### Why do those attacks exist ?
 
-Computer security is multiple level domains. Predict and model those attacks is
-very difficult.  Each layer of the security domain works on the other layers
-security assumption. The software developer assume that the hardware designer
-did his job well.  As a result, security faults involve unanticipated
+Computer security is a deep layered domain. Predicting and modeling those
+attacks is very difficult. Each layer of security impacts the assumptions made
+by the others. The software developer assumes that the hardware designer did
+his job well. As a result, security faults often involve unanticipated
 interactions between components. Components who are made by different people.
 ![Side equipement](Images/Side_channel.png)
-With the existing model, side channel attacks can't be avoided. The model is
+Within the existing model, side channel attacks can't be avoided. The model is
 vulnerable by design.
 
 ## Differential Power Analysis
 
 On the hardware level, cryptographic algorithms are implemented using
 semiconductor and logic gates (made of transistors). Those components have a
-power consumption, which can be measured.  First of all, this attack can't be
+power consumption, which can be measured. First of all, this attack can't be
 easily implemented at home.
 
 You need an oscilloscope and a physical access to the processor/chip tested.
 
 ![DPA Equipements](Images/power-analysis.jpg)
 
-
-In addition of the SPA (simple power analysis) we add statistical function to
-guess sensitive information from power consumption.
+In addition of the SPA (simple power analysis) we add statistical functions to
+deduce sensitive information from power consumption.
 
 ## AES Encryption
-As Wikipedia say:
+As Wikipedia says:
 ```
 'AES (acronym of Advanced Encryption Standard) is a symmetric encryption
 algorithm. The algorithm was developed by two Belgian cryptographer Joan Daemen
@@ -68,20 +68,20 @@ software, and supports a block length of 128 bits and key lengths of 128, 192,
 and 256 bits.'
 ```
 
-AES is a standard and widely used. Facts that make him very interesting for
-hackers.
+AES is a standard and widely used. Characteristics that make it very
+interesting for hackers.
 
 # AES Weakness
 
 In AES, the plain text block is first XORed with the primary key and then goes
-through 10 rounds of processing. Each round consist of :
+through 10 rounds of processing. Each round consists of :
 - SubByte
 - ShiftRow
 - MixColumn
 - AddRoundKey
 
 ![aes](Images/AES.png)
-We are looking for the roundkey of the last round (the only without the
+We are looking for the roundkey of the last round (the only one without the
 MixColumn step).
 
 
@@ -91,15 +91,15 @@ operations and T power traces captures with k samples each.
 
 # Implementation
 To be successful a DPA attack needs to follow a few steps:
-- Generate a huge amount of encryption/decryption operation with the target
+- Generate a huge amount of encryption/decryption operations using the target
   cryptosystem and key.
-- For each operation get the power consumption and the I/O (clear text and/or
-  cipher text)
+- Trace, for each operation, both power consumption and I/O (clear text
+  and/or cipher text)
 - Take a byte from the SBOX output and use it as a separator.
-- Make the average of each sub group
-- Do the operation for each possible value of a byte (255).
-- Take the highest value and enjoy finding a Bite of the key.
-- Repeat for each byte if the key.
+- Make the average out of each sub group.
+- Repeat operation for each possible value of a byte (255).
+- Take the highest average and enjoy finding a byte of the key.
+- Repeat for each byte of the key.
 
 ## Matlab program
 
@@ -111,12 +111,12 @@ figure(1);
 plot(traces(1,:));
 title('Consommation totale d’un chiffrement');
 
-% --> With zoom on first round <--
+% --> Then zoom on the first round <--
 offset = 50000;
 segmentLength = 40000;
 traces2 = myload('traces-00112233445566778899aabbccddeeff.bin', traceSize, offset, segmentLength, numberOfTraces);
 
-% --> Zoom into an AES round <--
+% --> Zoom onto an AES round <--
 figure(2);
 plot(traces2(2,:));
 title('Consommation d’un round AES');
@@ -133,7 +133,7 @@ keyCandidateStart = 0;
 keyCandidateStop = 255; % All possibilities on 1 Bytes
 solvedKey = zeros(1,byteEnd);
 ```
-- We need to loop over the 200 traces gived, and split them into 2 groups :
+- We need to loop over the 200 traces given, and split them into 2 groups :
 ```Matlab
  % On parcours l'ensemble des 200 traces
         for L = 1:numberOfTraces
@@ -151,7 +151,7 @@ solvedKey = zeros(1,byteEnd);
         end;
 ```
 
-- Then we loop over each key candidate and make the average of each subgroup :
+- Then we loop over each key candidate and make the average out of each subgroup :
 ```Matlab
    for K = keyCandidateStart:keyCandidateStop
         % --> calculate hypothesis here <--
@@ -176,7 +176,7 @@ solvedKey = zeros(1,byteEnd);
         groupFin(K+1,:) = abs(group1(1,:)-group2(1,:));
     end;
  ```
-- Last part : get the highest point of each raw and clumn to find the correct value.
+- Last part : get the highest point of each row and clumn to find the correct value.
 ```Matlab
 % for every byte in the key do:
 for BYTE=byteStart:byteEnd
@@ -377,7 +377,7 @@ end;
 # Conclusion
 Through this exercise, we were able to implement a successful DPA attack on
 AES-128. Even if the attack has a lot of requirements and needs a lot of work
-to be effective, we clearly see the possibilities and the threats of sides
+to be effective, we clearly see the possibilities and threats of side
 channel attacks.
 
 In the actual state of art, nothing cheap and effective can be found to avoid
@@ -385,7 +385,7 @@ those attacks. The consumption randomisation and reduction is clearly too
 expensive for entities others than governments or big companies.
 
 The progressive centralisation of computing process in the 'cloud' may help
-governements and agencies to perform side channels attack. Indeed, a datacenter
+governements and agencies perform side channels attack. Indeed, a datacenter
 is a warehouse with physical access to a lot of computing hardware. And the
 standardisation of side channel attacks on datacenter may already be a reality.
 
