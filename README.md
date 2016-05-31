@@ -162,9 +162,7 @@ solvedKey = zeros(1,byteEnd);
 ```Matlab
 % for every byte in the key do:
 for BYTE=byteStart:byteEnd
- 
-    
-    % Create the hypothesis matrix (dimensions: 
+     % Create the hypothesis matrix (dimensions: 
     % rows = numberOfTraces, columns = 256). 
     % The number 256 represents all possible bytes (e.g., 0x00..0xFF)
     groupFin(1,:) = zeros(1,segmentLength);
@@ -259,8 +257,8 @@ traces = myload('traces-00112233445566778899aabbccddeeff.bin', traceSize, offset
 %   'file' - name of the file containing the plain text or cipher text
 %   columns - number of columns (e.g., size of the AES data block)
 %   rows - number of rows (e.g., number of measurements)
-plain text = myin('plaintext-00112233445566778899aabbccddeeff.txt', columns, rows);
-cipher text = myin('ciphertext-00112233445566778899aabbccddeeff.txt', columns, rows);
+plaintext = myin('plaintext-00112233445566778899aabbccddeeff.txt', columns, rows);
+ciphertext = myin('ciphertext-00112233445566778899aabbccddeeff.txt', columns, rows);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % EXERCISE 1 -- Plotting the power trace(s): %
@@ -360,4 +358,6 @@ end;
 
 # Conclusion
 Through this exercise, we were able to implement a successful DPA attack on AES-128. Even if the attack has a lot of requirements and needs a lot of work to be effective, we clearly see the possibilities and the threats of sides channel attacks.  
-`With the computer security multiple level domain as it is now` **hein ?**, nothing cheap and effective can be found to avoid those attacks. The consumption randomisation and reduction is clearly too expensive for entities others than governments or big companies.  
+In the actual state of art, nothing cheap and effective can be found to avoid those attacks. The consumption randomisation and reduction is clearly too expensive for entities others than governments or big companies.   
+
+The progressive centralisation of computing process in the 'cloud' may help governements and agencies to perform side channels attack. Indeed, a datacenter is a warehouse with physical access to a lot of computing hardware. And the standardisation of side channel attacks on datacenter may already be a reality. Who know what's going on behind those big walls.  
